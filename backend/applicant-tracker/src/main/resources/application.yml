@@ -1,0 +1,13 @@
+server:
+  port: 8080
+logging:
+  file:
+    name: applicationLog.log
+spring:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/applicant_tracker
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: YOUR_PASSWORD
+
+
