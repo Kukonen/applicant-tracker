@@ -10,4 +10,6 @@ spring:
     username: postgres
     password: YOUR_PASSWORD
 
-
+mybatis:
+  type-aliases-package: org.applicant.tracker.dao.mapper
+  mapper-locations: classpath:**/mapper/*Mapper.xml

@@ -1,0 +1,33 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.applicant.tracker.dao.mapper.IApplicantMapper">
+
+    <select id="getAll">
+        select * from applicant
+    </select>
+
+    <select id="getById" resultType="org.applicant.tracker.dao.dto.Applicant">
+        select * from applicant where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="org.applicant.tracker.dao.dto.Applicant">
+        INSERT INTO applicant(snils, name) VALUES(#{snils},#{name});
+    </insert>
+
+    <update id="update" parameterType="org.applicant.tracker.dao.dto.Applicant">
+        UPDATE applicant
+        SET snils = #{snils},
+            name = #{name}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="deleteById">
+        delete from applicant where id = #{id}
+    </delete>
+
+    <delete id="delete" parameterType="org.applicant.tracker.dao.dto.Applicant">
+        delete from applicant where snils = #{snils} and name = #{name}
+    </delete>
+</mapper>

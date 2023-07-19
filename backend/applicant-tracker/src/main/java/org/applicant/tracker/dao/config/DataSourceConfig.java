@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    /** Datasource для Hikari описан в application.spring.datasource */
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource hikariPostgresDataSource() {

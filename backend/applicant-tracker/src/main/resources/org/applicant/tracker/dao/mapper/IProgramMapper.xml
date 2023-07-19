@@ -1,0 +1,45 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.applicant.tracker.dao.mapper.IProgramMapper">
+
+    <select id="getAll">
+        select * from program
+    </select>
+
+    <select id="getById" resultType="org.applicant.tracker.dao.dto.Program">
+        select * from program where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="org.applicant.tracker.dao.dto.Program">
+        INSERT INTO program(university, places, name, form, type) VALUES(#{university},
+                                                                         #{places},#{name},
+                                                                         #{form, javaType=org.applicant.tracker.enums.EducationForm, jdbcType=VARCHAR},
+                                                                         #{type, javaType=org.applicant.tracker.enums.PaymentType, jdbcType=VARCHAR});
+    </insert>
+
+    <update id="update" parameterType="org.applicant.tracker.dao.dto.Program">
+        UPDATE program
+        SET university = #{university},
+            places = #{places},
+            name = #{name},
+            form = #{form, javaType=org.applicant.tracker.enums.EducationForm, jdbcType=VARCHAR},
+            type = #{type, javaType=org.applicant.tracker.enums.PaymentType, jdbcType=VARCHAR}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="deleteById">
+        delete from program where id = #{id}
+    </delete>
+
+    <delete id="delete" parameterType="org.applicant.tracker.dao.dto.Applicant">
+        delete from program where
+            university = #{university} and
+            places = #{places} and
+            name = #{name} and
+            form = #{form, javaType=org.applicant.tracker.enums.EducationForm, jdbcType=VARCHAR} and
+            type = #{type, javaType=org.applicant.tracker.enums.PaymentType, jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
