@@ -1,10 +1,9 @@
 package org.applicant.tracker.dao.service;
 
-import org.applicant.tracker.dao.dto.Applicant;
 import org.applicant.tracker.dao.dto.Program;
 import org.applicant.tracker.enums.EducationForm;
 import org.applicant.tracker.enums.PaymentType;
-import org.applicant.tracker.exceptions.DatabaseException;
+import org.applicant.tracker.dao.exceptions.DatabaseException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

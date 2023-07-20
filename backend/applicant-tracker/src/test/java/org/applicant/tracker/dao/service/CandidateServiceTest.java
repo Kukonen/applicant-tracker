@@ -1,7 +1,7 @@
 package org.applicant.tracker.dao.service;
 
 import org.applicant.tracker.dao.dto.Candidate;
-import org.applicant.tracker.exceptions.DatabaseException;
+import org.applicant.tracker.dao.exceptions.DatabaseException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package org.applicant.tracker.exceptions;
+package org.applicant.tracker.dao.exceptions;
 
 import java.util.UUID;
 

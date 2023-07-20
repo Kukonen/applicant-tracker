@@ -1,8 +1,11 @@
 package org.applicant.tracker.dao.service;
 
 import org.applicant.tracker.dao.dto.IEntity;
+import org.applicant.tracker.dao.exceptions.DuplicatedRecordsDatabaseException;
+import org.applicant.tracker.dao.exceptions.InternalDatabaseException;
 import org.applicant.tracker.dao.mapper.IMapper;
-import org.applicant.tracker.exceptions.DatabaseException;
+import org.applicant.tracker.dao.exceptions.DatabaseException;
+import org.applicant.tracker.dao.exceptions.NoContentDatabaseException;
 
 import java.util.List;
 
@@ -12,49 +15,49 @@ public abstract class AbstractDatabaseService<Mapper extends IMapper<Entity>, En
 
     protected Mapper mapper;
 
-    List<Entity> getAll() {
+    public List<Entity> getAll() {
         return mapper.getAll();
     }
 
-    Entity getById(Long id) throws DatabaseException {
+    public Entity getById(Long id) throws DatabaseException {
         Entity entity = mapper.getById(id);
 
         if (entity == null) {
-            throw new DatabaseException("В таблице отсутствует запись с таким id!");
+            throw new NoContentDatabaseException("В таблице отсутствует запись с таким id!");
         }
 
         return entity;
     }
 
-    void insert(Entity entity) throws DatabaseException {
+    public void insert(Entity entity) throws DatabaseException {
         try {
             // Если мы добавили 0 записей, то кидаем исключение
             if (mapper.insert(entity) == 0) {
-                throw new DatabaseException("Запись не была добавлена в таблицу по внутренней ошибке");
+                throw new InternalDatabaseException("Запись не была добавлена в таблицу по внутренней ошибке");
             }
         } catch (org.springframework.dao.DuplicateKeyException e) {
-            throw new DatabaseException("Запись не была добавлена в таблицу по причине дублирования ключей: " + e);
+            throw new DuplicatedRecordsDatabaseException("Запись не была добавлена в таблицу по причине дублирования ключей, отмеченных как уникальные: " + e);
         }
     }
 
-    void deleteById(Long id) throws DatabaseException {
+    public void deleteById(Long id) throws DatabaseException {
         // Если мы удалили 0 записей, то кидаем исключение
         if (mapper.deleteById(id) == 0) {
-            throw new DatabaseException("Запись с таким id не была удалена!");
+            throw new NoContentDatabaseException("Запись не была удалена по причине отсутствия данных с таким id!");
         }
     }
 
-    void deleteAll(Entity entity) throws DatabaseException {
+    public void deleteAll(Entity entity) throws DatabaseException {
         // Если мы удалили 0 записей, то кидаем исключение
         if (mapper.delete(entity) == 0) {
-            throw new DatabaseException("Запись не была удалена!");
+            throw new NoContentDatabaseException("Запись не была удалена по причине отсутствия таких данных!");
         }
     }
 
-    void update(Entity entity) throws DatabaseException {
+    public void update(Entity entity) throws DatabaseException {
         // Если мы обновили 0 записей, то кидаем исключение
         if (mapper.update(entity) == 0) {
-            throw new DatabaseException("Запись не была обновлена!");
+            throw new NoContentDatabaseException("Запись не была обновлена по причине отсутствия таких данных!");
         }
     }
 
