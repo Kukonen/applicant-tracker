@@ -4,11 +4,20 @@
 
 <mapper namespace="org.applicant.tracker.dao.mapper.IProgramMapper">
 
+    <resultMap id="programResultMap" type="org.applicant.tracker.dao.dto.Program">
+        <id property="id" column="id" javaType="Long" jdbcType="BIGINT"/>
+        <result property="university" column="university" javaType="String" jdbcType="VARCHAR"/>
+        <result property="places" column="places" javaType="int" jdbcType="INTEGER"/>
+        <result property="name" column="name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="form" column="form" javaType="org.applicant.tracker.enums.EducationForm" jdbcType="VARCHAR"/>
+        <result property="type" column="type" javaType="org.applicant.tracker.enums.PaymentType" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <select id="getAll">
         select * from program
     </select>
 
-    <select id="getById" resultType="org.applicant.tracker.dao.dto.Program">
+    <select id="getById" resultMap="programResultMap">
         select * from program where id = (#{id})
     </select>
 
@@ -33,7 +42,7 @@
         delete from program where id = #{id}
     </delete>
 
-    <delete id="delete" parameterType="org.applicant.tracker.dao.dto.Applicant">
+    <delete id="delete" parameterType="org.applicant.tracker.dao.dto.Program">
         delete from program where
             university = #{university} and
             places = #{places} and
