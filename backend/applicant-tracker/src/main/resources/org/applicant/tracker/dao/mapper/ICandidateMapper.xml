@@ -1,0 +1,57 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.applicant.tracker.dao.mapper.ICandidateMapper">
+
+    <select id="getAll">
+        select * from candidate
+    </select>
+
+    <select id="getByApplicantId" resultType="org.applicant.tracker.dao.dto.Candidate" parameterType="java.lang.Long">
+        select * from candidate where applicant_id = (#{applicantId})
+    </select>
+
+    <select id="getByProgramId" resultType="org.applicant.tracker.dao.dto.Candidate" parameterType="java.lang.Long">
+        select * from candidate where program_id = (#{programId})
+    </select>
+
+    <select id="getBySnils" resultType="org.applicant.tracker.dao.dto.Candidate" parameterType="java.lang.String">
+        select * from candidate c join applicant a on c.applicant_id = a.id where a.snils = (#{snils})
+    </select>
+
+    <select id="getById" resultType="org.applicant.tracker.dao.dto.Candidate">
+        select * from candidate where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="org.applicant.tracker.dao.dto.Candidate">
+        INSERT INTO candidate(applicant_id, program_id, score, priority, is_certificate_submitted) VALUES(
+                                                                                                          #{applicantId},
+                                                                                                          #{programId},
+                                                                                                          #{score},
+                                                                                                          #{priority},
+                                                                                                          #{isCertificateSubmitted});
+    </insert>
+
+    <update id="update" parameterType="org.applicant.tracker.dao.dto.Candidate">
+        UPDATE candidate
+        SET applicant_id = #{applicantId},
+            program_id = #{programId},
+            score = #{score},
+            priority = #{priority},
+            is_certificate_submitted = #{isCertificateSubmitted}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="deleteById">
+        delete from candidate where id = #{id}
+    </delete>
+
+    <delete id="delete" parameterType="org.applicant.tracker.dao.dto.Applicant">
+        delete from candidate where applicant_id = #{applicantId} and
+            program_id = #{programId} and
+            score = #{score} and
+            priority = #{priority} and
+            is_certificate_submitted = #{isCertificateSubmitted}
+    </delete>
+</mapper>

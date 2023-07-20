@@ -1,9 +1,6 @@
 package org.applicant.tracker.dao.service;
 
-import org.applicant.tracker.dao.dto.Applicant;
-import org.applicant.tracker.dao.dto.Program;
-import org.applicant.tracker.enums.EducationForm;
-import org.applicant.tracker.enums.PaymentType;
+import org.applicant.tracker.dao.dto.Candidate;
 import org.applicant.tracker.exceptions.DatabaseException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,39 +14,26 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ProgramServiceTest {
+class CandidateServiceTest {
 
     @Autowired
-    ProgramService programService;
+    CandidateService candidateService;
 
     Random random = new Random();
 
     private final Logger logger = LoggerFactory.getLogger(ProgramService.class);
 
-    Program program1 = new Program(0L, "ГУАП", 100, "Прогинж", EducationForm.MIXED, PaymentType.CONTRACT);
-    Program program2 = new Program(0L, "ЛЭТИ", 50, "Прогинж", EducationForm.EXTRAMURAL, PaymentType.BUDGET);
-    Program program3 = new Program(0L, "ЧВК (челябинский военный колледж)", 3000, "убийца детей", EducationForm.FULL_TIME, PaymentType.TARGETED);
-
-    void init() {
-        try {
-            //programService.insert(program1);
-            programService.insert(program3);
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    Candidate candidate1 = new Candidate(0L, 9L, 22L, 255, null, false);
 
     @Test
     void insertAndGetLastShouldBeEqualInitialInsert() throws DatabaseException {
 
-        init();
-
-        Program program = program2;
+        Candidate candidate = candidate1;
 
         // Просто пробуем вставить запись в бд, и проверяем её присутствие в БД
-        programService.insert(program);
+        candidateService.insert(candidate);
 
-        Program actual;
+        Candidate actual;
 
         try {
             actual = getLast();
@@ -58,13 +42,22 @@ class ProgramServiceTest {
             return;
         }
 
-        logger.info("\ninitial: " + program.toString() + "\nactual: " + actual.toString());
+        logger.info("\ninitial: " + candidate.toString() + "\nactual: " + actual.toString());
         logger.info("Whole table: " + getAll().toString());
-        assertEquals(program, actual);
+        assertEquals(candidate, actual);
 
-        programService.deleteById(program.getId());
+        candidateService.deleteById(candidate.getId());
 
         logger.info("Whole table: " + getAll().toString());
+
+    }
+
+    @Test
+    void getByNonExistingSnilsShouldThrewException() {
+
+        String snils = "haha this snils can not exist!";
+
+        assertThrows(DatabaseException.class, () -> candidateService.getBySnils(snils));
 
     }
 
@@ -72,7 +65,7 @@ class ProgramServiceTest {
     void deletedAnyEntityShouldNotBeInDB() throws DatabaseException {
 
         // Просто удаляем рандомную запись и смотрим, чтобы её не было в БД
-        Program deleting;
+        Candidate deleting;
         try {
             deleting = getRandom();
         } catch (DatabaseException e) {
@@ -80,17 +73,17 @@ class ProgramServiceTest {
             return;
         }
 
-        programService.deleteAll(deleting);
+        candidateService.deleteAll(deleting);
 
-        ArrayList<Program> programs = getAll();
+        ArrayList<Candidate> candidates = getAll();
 
-        assertFalse(programs.contains(deleting));
+        assertFalse(candidates.contains(deleting));
 
 
         logger.info("Whole table: " + getAll().toString());
 
         // После проверки добавляем назад, чтобы не остаться без записей
-        programService.insert(deleting);
+        candidateService.insert(deleting);
 
         logger.info("Whole table: " + getAll().toString());
 
@@ -100,14 +93,14 @@ class ProgramServiceTest {
     void deletingNonExistingShouldThrewException() throws DatabaseException {
 
         // При попытке удаления несуществующей записи по id должны получить DatabaseException
-        assertThrows(DatabaseException.class, () -> programService.deleteById(-666L));
+        assertThrows(DatabaseException.class, () -> candidateService.deleteById(-666L));
 
     }
 
     @Test
     void updatedAndGottenShouldBeEqualUpdated() throws DatabaseException {
 
-        Program initial;
+        Candidate initial;
         try {
             initial = getRandom(); // Берём случайную запись
         } catch (DatabaseException e) {
@@ -116,16 +109,16 @@ class ProgramServiceTest {
         }
 
         // Генерируем обновлённую на основе имеющейся (рандомим places)
-        Program updated = new Program(initial.getId(), initial.getUniversity(), random.nextInt(1000), initial.getName(), initial.getForm(), initial.getType());
+        Candidate updated = new Candidate(initial.getId(), initial.getApplicantId(), initial.getProgramId(), random.nextInt(400), random.nextInt(5), initial.isCertificateSubmitted());
 
         logger.info("Whole table: " + getAll().toString());
 
         // Используем сервис и обновляем запись
-        programService.update(updated);
+        candidateService.update(updated);
 
-        Program actual;
+        Candidate actual;
         try {
-            actual = programService.getById(updated.getId());
+            actual = candidateService.getById(updated.getId());
         } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
@@ -143,26 +136,27 @@ class ProgramServiceTest {
 
     }
 
-    Program getLast() throws DatabaseException {
-        ArrayList<Program> programs = getAll();
-        if (programs.size() < 1) {
+    Candidate getLast() throws DatabaseException {
+        ArrayList<Candidate> candidates = getAll();
+        if (candidates.size() < 1) {
             throw new DatabaseException("Table is empty!");
         }
-        return programs.get(programs.size() - 1);
+        return candidates.get(candidates.size() - 1);
     }
 
 
-    ArrayList<Program> getAll() throws DatabaseException {
-        return (ArrayList<Program>) programService.getAll();
+    ArrayList<Candidate> getAll() throws DatabaseException {
+        return (ArrayList<Candidate>) candidateService.getAll();
     }
 
-    Program getRandom() throws DatabaseException {
-        ArrayList<Program> programs = getAll();
-        if (programs.size() < 1) {
+    Candidate getRandom() throws DatabaseException {
+        ArrayList<Candidate> candidates = getAll();
+        if (candidates.size() < 1) {
             throw new DatabaseException("Table is empty!");
         }
-        return programs.get(random.nextInt(programs.size()));
+        return candidates.get(random.nextInt(candidates.size()));
     }
+
 
 
 }

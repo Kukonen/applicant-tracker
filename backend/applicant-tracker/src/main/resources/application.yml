@@ -1,15 +1,18 @@
 server:
   port: 8080
-logging:
-  file:
-    name: applicationLog.log
 spring:
   datasource:
     jdbc-url: jdbc:postgresql://localhost:5432/applicant_tracker
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: YOUR_PASSWORD
+    password: nikitanukuta
 
 mybatis:
   type-aliases-package: org.applicant.tracker.dao.mapper
   mapper-locations: classpath:**/mapper/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+logging:
+  file:
+    name: appLogs.log

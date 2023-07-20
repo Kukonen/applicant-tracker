@@ -12,4 +12,6 @@ public interface ICandidateMapper extends IMapper<Candidate> {
 
     List<Candidate> getByProgramId(Long programId);
 
+    Candidate getBySnils(String snils);
+
 }
